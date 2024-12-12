@@ -113,14 +113,13 @@ void Purchase::printPurchasesForCustomer(const vector<Purchase>& purchases, int 
 }
 
 
-
 void Purchase::saveToFile(const vector<Purchase>& purchases, const string& filename) {
     ofstream file(filename);
     if (file.is_open()) {
         for (const auto& purchase : purchases) {
             // Save purchase details with commas separating each field
             file << purchase.getAccountNumber() << ", "
-                << purchase.getItem() << ", "
+                << purchase.getItem() << ","
                 << purchase.getDate() << ", "
                 << purchase.getAmount() << endl;   // Amount remains as it is
         }

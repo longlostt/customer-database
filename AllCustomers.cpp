@@ -32,6 +32,12 @@ void Customer::setZipCode(const string& zipCode) { this->zipCode = zipCode; }
 void Customer::setPhoneNumber(const string& phoneNumber) { this->phoneNumber = phoneNumber; }
 
 // Load customers from file
+std::string trim(const std::string& str) {
+    auto start = std::find_if_not(str.begin(), str.end(), isspace);
+    auto end = std::find_if_not(str.rbegin(), str.rend(), isspace).base();
+    return (start < end) ? std::string(start, end) : std::string();
+}
+
 vector<Customer> Customer::loadFromFile(const string& filename) {
     vector<Customer> customers;
     ifstream file(filename);
@@ -47,21 +53,27 @@ vector<Customer> Customer::loadFromFile(const string& filename) {
             ss >> firstName >> lastName >> accountNumber;
 
             // Read the rest of the address fields
-            getline(ss, streetAddress, ',');  // Read street address (up to the first comma)
-            ss.ignore(); // Ignore spaces or other separators after the comma
-
-            getline(ss, city, ',');           // Read city
+            getline(ss, streetAddress, ',');
+            streetAddress = trim(streetAddress); // Trim leading and trailing whitespace
             ss.ignore();
 
-            getline(ss, state, ',');          // Read state
+            getline(ss, city, ',');
+            city = trim(city);
             ss.ignore();
 
-            getline(ss, zipCode, ',');        // Read zip code
+            getline(ss, state, ',');
+            state = trim(state);
             ss.ignore();
 
-            // Finally, read the phone number (remaining part of the string)
+            getline(ss, zipCode, ',');
+            zipCode = trim(zipCode);
+            ss.ignore();
+
+            // Read phone number and trim it
             getline(ss, phoneNumber);
+            phoneNumber = trim(phoneNumber);
 
+            // Add the customer to the vector
             customers.emplace_back(firstName, lastName, accountNumber, streetAddress, city, state, zipCode, phoneNumber);
         }
 
@@ -69,7 +81,6 @@ vector<Customer> Customer::loadFromFile(const string& filename) {
     }
     return customers;
 }
-
 
 // Add a single customer
 void Customer::addCustomer(vector<Customer>& customers) {
@@ -183,7 +194,7 @@ void Customer::printCustomerDetailsWithPurchases(const vector<Customer>& custome
             cout << "Customer Details:\n";
             cout << "Name: " << customer.getFirstName() << " " << customer.getLastName() << endl;
             cout << "Account #: " << customer.getAccountNumber() << endl;
-            cout << "Address: " << customer.getStreetAddress() << ", " << customer.getCity() << ", "
+            cout << "Address:" << customer.getStreetAddress() << ", " << customer.getCity() << ", "
                 << customer.getState() << " " << customer.getZipCode() << endl;
             cout << "Phone: " << customer.getPhoneNumber() << endl;
 
@@ -192,9 +203,9 @@ void Customer::printCustomerDetailsWithPurchases(const vector<Customer>& custome
             bool found = false;
             for (const auto& purchase : purchases) {
                 if (purchase.getAccountNumber() == accountNumber) {
-                    cout << "  Item: " << purchase.getItem()
-                        << ", Date: " << purchase.getDate()
-                        << ", Amount: " << purchase.getAmount() << endl;
+                    cout << "  Item:" << purchase.getItem()
+                        << ", Date:" << purchase.getDate()
+                        << ", Amount:" << purchase.getAmount() << endl;
                     found = true;
                 }
             }
@@ -218,7 +229,7 @@ void Customer::saveToFile(const vector<Customer>& customers, const string& filen
             // Write the customer's data to the file with the desired format
             file << customer.getFirstName() << " "
                 << customer.getLastName() << " "
-                << customer.getAccountNumber() << " "
+                << customer.getAccountNumber() << ""
                 << customer.getStreetAddress() << ", "  // Add a comma after the street address
                 << customer.getCity() << ", "           // Add a comma after the city
                 << customer.getState() << ", "          // Add a comma after the state
@@ -243,12 +254,12 @@ const std::vector<Purchase>& Customer::getPurchases() const {
     return purchases;
 }
 
-void Customer::linkPurchasesToCustomers(std::vector<Customer>& customers, const std::vector<Purchase>& purchases) {
-    for (const auto& purchase : purchases) {
-        for (auto& customer : customers) {
-            if (customer.getAccountNumber() == purchase.getAccountNumber()) {
-                customer.addPurchase(purchase);
-            }
-        }
-    }
-}
+//void Customer::linkPurchasesToCustomers(std::vector<Customer>& customers, const std::vector<Purchase>& purchases) {
+//    for (const auto& purchase : purchases) {
+//        for (auto& customer : customers) {
+//            if (customer.getAccountNumber() == purchase.getAccountNumber()) {
+//                customer.addPurchase(purchase);
+//            }
+//        }
+//    }
+//}
