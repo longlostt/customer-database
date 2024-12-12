@@ -1,6 +1,8 @@
 #include "Customers.h"
 #include "Purchases.h"
 #include <sstream> // Include for istringstream
+#include <limits>
+
 
 
 // Constructor implementation
@@ -87,34 +89,45 @@ void Customer::addCustomer(vector<Customer>& customers) {
     string firstName, lastName, streetAddress, city, state, zipCode, phoneNumber;
     int accountNumber;
 
-	cin.ignore();  // Clear the buffer before using getline
+    cin.ignore();  // Clear the buffer before using getline
 
     // Get customer information using a method from the Customer class
     cout << "Enter first name: ";
     getline(cin, firstName);  // Use getline for multi-word input
-	
+
     cout << "Enter last name: ";
     getline(cin, lastName);
-    
-    cout << "Enter account number: ";
-    cin >> accountNumber;
-    cin.ignore();  // Clear the buffer after cin, before using getline
+
+    // Validate account number input
+    while (true) {
+        cout << "Enter account number: ";
+        cin >> accountNumber;
+        if (cin.fail()) {
+            cin.clear(); // Clear the error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore invalid input
+            cout << "Invalid input. Please enter a valid account number." << endl;
+        }
+        else {
+            cin.ignore();  // Clear the buffer after cin, before using getline
+            break;
+        }
+    }
 
     cout << "Enter street address: ";
     getline(cin, streetAddress);
-    
+
     cout << "Enter city: ";
     getline(cin, city);
-   
+
     cout << "Enter state: ";
     getline(cin, state);
-    
+
     cout << "Enter zip code: ";
     getline(cin, zipCode);
-    
+
     cout << "Enter phone number: ";
     getline(cin, phoneNumber);
-   
+
     // Create a customer object with the input data
     Customer newCustomer(firstName, lastName, accountNumber, streetAddress, city, state, zipCode, phoneNumber);
 

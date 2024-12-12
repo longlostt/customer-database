@@ -3,6 +3,8 @@
 #include <string>
 #include "Customers.h"
 #include "Purchases.h"
+#include <limits>
+
 
 using namespace std;
 
@@ -123,16 +125,31 @@ int main() {
             int accountNumber;
             string item, date;
             double amount;
+
             cout << "Enter account number: ";
-            cin >> accountNumber;
+            while (!(cin >> accountNumber)) {
+                cout << "Invalid input. Please enter a valid account number: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+
             cout << "Enter item: ";
-            cin >> item;
+            cin.ignore(); // To ignore the newline character left in the buffer
+            getline(cin, item);
+
             cout << "Enter date: ";
-            cin >> date;
+            getline(cin, date);
+
             cout << "Enter amount: ";
-            cin >> amount;
+            while (!(cin >> amount)) {
+                cout << "Invalid input. Please enter a valid amount: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+
             purchases.emplace_back(accountNumber, item, date, amount);
             break;
+
         }
         case 10: {
             system("cls");
