@@ -108,24 +108,35 @@ void Customer::printAllCustomers(const vector<Customer>& customers) {
 }
 
 // Print specific customer details
-void Customer::printCustomerDetails(const vector<Customer>& customers, const vector<Purchase>& purchases, int accountNumber) {
+void Customer::printCustomerDetails(const vector<Customer>& customers, int accountNumber) {
     for (const auto& customer : customers) {
         if (customer.getAccountNumber() == accountNumber) {
-            cout << customer.getFirstName() << " " << customer.getLastName() << " " << customer.getAccountNumber() << " "
-                << customer.getStreetAddress() << " " << customer.getCity() << " " << customer.getState() << " "
-                << customer.getZipCode() << " " << customer.getPhoneNumber() << endl;
+            // Print customer details
+            cout << "Customer Details:\n";
+            cout << "Name: " << customer.getFirstName() << " " << customer.getLastName() << endl;
+            cout << "Account #: " << customer.getAccountNumber() << endl;
+            cout << "Address: " << customer.getStreetAddress() << ", " << customer.getCity() << ", "
+                << customer.getState() << " " << customer.getZipCode() << endl;
+            cout << "Phone: " << customer.getPhoneNumber() << endl;
 
             // Print linked purchases
             cout << "Purchases:" << endl;
-            for (const auto& purchase : purchases) {
-                if (purchase.getAccountNumber() == accountNumber) {
-                    cout << "Item: " << purchase.getItem() << ", Date: " << purchase.getDate() << ", Amount: " << purchase.getAmount() << endl;
+            const auto& linkedPurchases = customer.getPurchases();
+            if (!linkedPurchases.empty()) {
+                for (const auto& purchase : linkedPurchases) {
+                    cout << "  Item: " << purchase.getItem()
+                        << ", Date: " << purchase.getDate()
+                        << ", Amount: $" << purchase.getAmount() << endl;
                 }
             }
-            break;
+            else {
+                cout << "  No purchases found for this customer." << endl;
+            }
+            break; // Stop after finding the matching customer
         }
     }
 }
+
 
 void Customer::saveToFile(const vector<Customer>& customers, const string& filename) {
     ofstream file(filename);
@@ -139,5 +150,25 @@ void Customer::saveToFile(const vector<Customer>& customers, const string& filen
     }
     else {
         cerr << "Unable to open file for writing: " << filename << endl;
+    }
+}
+
+
+// addPurchase 
+void Customer::addPurchase(const Purchase& purchase) {
+    purchases.push_back(purchase);
+}
+
+const std::vector<Purchase>& Customer::getPurchases() const {
+    return purchases;
+}
+
+void Customer::linkPurchasesToCustomers(std::vector<Customer>& customers, const std::vector<Purchase>& purchases) {
+    for (const auto& purchase : purchases) {
+        for (auto& customer : customers) {
+            if (customer.getAccountNumber() == purchase.getAccountNumber()) {
+                customer.addPurchase(purchase);
+            }
+        }
     }
 }

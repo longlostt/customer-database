@@ -13,13 +13,14 @@ void printMenu() {
     cout << "3. Print a specific customer’s account information and all associated purchases" << endl;
     cout << "4. Print total spend for a customer" << endl;
     cout << "5. Add a new customer" << endl;
-    cout << "6. Add multiple new customers (using recursion)" << endl;
+    cout << "6. Add multiple new customers" << endl; // using recursion
     cout << "7. Update a customer’s information" << endl;
     cout << "8. Delete a customer’s information" << endl;
     cout << "9. Add a new purchase for a customer" << endl;
     cout << "10. Add multiple new purchases (using recursion)" << endl;
     cout << "11. Save updated data to the original files or copy to a new file" << endl;
     cout << "12. Exit" << endl;
+    
 }
 
 int main() {
@@ -54,7 +55,7 @@ int main() {
             int accountNumber;
             cout << "Enter account number: ";
             cin >> accountNumber;
-            Customer::printCustomerDetails(customers, purchases, accountNumber);
+            //Customer::printCustomerDetails(customers, purchases, accountNumber);
             Purchase::printPurchasesForCustomer(purchases, accountNumber);
             break;
         }
