@@ -1,4 +1,5 @@
 #include "Purchases.h"
+#include <sstream> // Include for istringstream
 
 // Constructor implementation
 Purchase::Purchase(int accountNumber, const string& item, const string& date, double amount)
@@ -20,17 +21,46 @@ void Purchase::setAmount(double amount) { this->amount = amount; }
 vector<Purchase> Purchase::loadFromFile(const string& filename) {
     vector<Purchase> purchases;
     ifstream file(filename);
+
     if (file.is_open()) {
-        int accountNumber;
-        string item, date;
-        double amount;
-        while (file >> accountNumber >> item >> date >> amount) {
+        string line;
+
+        while (getline(file, line)) {
+            stringstream ss(line);
+
+            int accountNumber;
+            string item, date;
+            double amount;
+
+            // Parse account number
+            ss >> accountNumber;
+            ss.ignore(); // Ignore the comma
+
+            // Parse item
+            getline(ss, item, ',');
+            // Remove leading/trailing spaces (optional)
+            item.erase(0, item.find_first_not_of(" \t"));
+            item.erase(item.find_last_not_of(" \t") + 1);
+
+            // Parse date
+            getline(ss, date, ',');
+
+            // Parse amount
+            ss >> amount;
+
+            // Add to purchases vector
             purchases.emplace_back(accountNumber, item, date, amount);
         }
         file.close();
     }
+    else {
+        cerr << "Error opening file: " << filename << endl;
+    }
+
     return purchases;
 }
+
+
 
 // Add a single purchase
 void Purchase::addPurchase(vector<Purchase>& purchases, const Purchase& purchase) {
@@ -68,22 +98,31 @@ double Purchase::calculateTotalSpend(const vector<Purchase>& purchases, int acco
 
 // Print purchases for a specific customer
 void Purchase::printPurchasesForCustomer(const vector<Purchase>& purchases, int accountNumber) {
+    bool found = false; // To track if any purchases are found for the account
     for (const auto& purchase : purchases) {
         if (purchase.getAccountNumber() == accountNumber) {
-            cout << "Item: " << purchase.getItem() << ", Date: " << purchase.getDate() << ", Amount: " << purchase.getAmount() << endl;
+            cout << "Item: " << purchase.getItem()
+                << ", Date: " << purchase.getDate()
+                << ", Amount: " << purchase.getAmount() << endl;
+            found = true;
         }
     }
+    if (!found) {
+        cout << "No purchases found for this account." << endl;
+    }
 }
+
+
 
 void Purchase::saveToFile(const vector<Purchase>& purchases, const string& filename) {
     ofstream file(filename);
     if (file.is_open()) {
         for (const auto& purchase : purchases) {
-            // Enclose item and date in quotes to handle spaces
-            file << purchase.getAccountNumber() << " "
-                << "\"" << purchase.getItem() << "\" "   // Enclose item in quotes
-                << "\"" << purchase.getDate() << "\" "   // Enclose date in quotes
-                << purchase.getAmount() << endl;         // Amount remains as it is
+            // Save purchase details with commas separating each field
+            file << purchase.getAccountNumber() << ", "
+                << purchase.getItem() << ", "
+                << purchase.getDate() << ", "
+                << purchase.getAmount() << endl;   // Amount remains as it is
         }
         file.close();
     }
@@ -91,4 +130,5 @@ void Purchase::saveToFile(const vector<Purchase>& purchases, const string& filen
         cerr << "Unable to open file for writing: " << filename << endl;
     }
 }
+
 

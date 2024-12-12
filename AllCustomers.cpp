@@ -103,8 +103,6 @@ void Customer::addCustomer(vector<Customer>& customers) {
     
     cout << "Enter phone number: ";
     getline(cin, phoneNumber);
-
-    cout << endl;
    
     // Create a customer object with the input data
     Customer newCustomer(firstName, lastName, accountNumber, streetAddress, city, state, zipCode, phoneNumber);
@@ -178,7 +176,7 @@ void Customer::printAllCustomers(const vector<Customer>& customers) {
 
 
 // Print specific customer details
-void Customer::printCustomerDetails(const vector<Customer>& customers, int accountNumber) {
+void Customer::printCustomerDetailsWithPurchases(const vector<Customer>& customers, const vector<Purchase>& purchases, int accountNumber) {
     for (const auto& customer : customers) {
         if (customer.getAccountNumber() == accountNumber) {
             // Print customer details
@@ -189,23 +187,28 @@ void Customer::printCustomerDetails(const vector<Customer>& customers, int accou
                 << customer.getState() << " " << customer.getZipCode() << endl;
             cout << "Phone: " << customer.getPhoneNumber() << endl;
 
-            // Print linked purchases
-            cout << "Purchases:" << endl;
-            const auto& linkedPurchases = customer.getPurchases();
-            if (!linkedPurchases.empty()) {
-                for (const auto& purchase : linkedPurchases) {
+            // Print purchases associated with the account number
+            cout << "Purchases:\n";
+            bool found = false;
+            for (const auto& purchase : purchases) {
+                if (purchase.getAccountNumber() == accountNumber) {
                     cout << "  Item: " << purchase.getItem()
                         << ", Date: " << purchase.getDate()
-                        << ", Amount: $" << purchase.getAmount() << endl;
+                        << ", Amount: " << purchase.getAmount() << endl;
+                    found = true;
                 }
             }
-            else {
+            if (!found) {
                 cout << "  No purchases found for this customer." << endl;
             }
-            break; // Stop after finding the matching customer
+            return; // Exit after finding and printing the customer
         }
     }
+
+    // If no customer matches the account number
+    cout << "No customer found with account number " << accountNumber << "." << endl;
 }
+
 
 
 void Customer::saveToFile(const vector<Customer>& customers, const string& filename) {
@@ -228,7 +231,6 @@ void Customer::saveToFile(const vector<Customer>& customers, const string& filen
         cerr << "Unable to open file for writing: " << filename << endl;
     }
 }
-
 
 
 

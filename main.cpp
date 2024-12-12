@@ -7,15 +7,16 @@
 using namespace std;
 
 void printMenu() {
+    cout << endl;
     cout << "Menu Options:" << endl;
     cout << "1. Print all customers" << endl;
     cout << "2. Sort and print customers in ascending/descending order" << endl;
-    cout << "3. Print a specific customer’s account information and all associated purchases" << endl;
+    cout << "3. Print a specific customer's account information and all associated purchases" << endl; // FIX 
     cout << "4. Print total spend for a customer" << endl;
     cout << "5. Add a new customer" << endl;
     cout << "6. Add multiple new customers" << endl; // using recursion
-    cout << "7. Update a customer’s information" << endl;
-    cout << "8. Delete a customer’s information" << endl;
+    cout << "7. Update a customer's information" << endl;
+    cout << "8. Delete a customer's information" << endl;
     cout << "9. Add a new purchase for a customer" << endl;
 	cout << "10. Add multiple new purchases" << endl; // using recursion
     cout << "11. Save updated data to the original files or copy to a new file" << endl;
@@ -44,8 +45,9 @@ int main() {
         case 2: {
             system("cls");
             bool ascending;
-            cout << "Enter 1 for ascending or 0 for descending: ";
+            cout << "Enter 1 for ascending or 0 for descending: " ;
             cin >> ascending;
+            cout << endl;
             Customer::sortCustomers(customers, ascending);
             Customer::printAllCustomers(customers);
             break;
@@ -55,8 +57,8 @@ int main() {
             int accountNumber;
             cout << "Enter account number: ";
             cin >> accountNumber;
-            Customer::printCustomerDetails(customers, accountNumber);
-            Purchase::printPurchasesForCustomer(purchases, accountNumber);
+            cout << endl;
+            Customer::printCustomerDetailsWithPurchases(customers, purchases, accountNumber);
             break;
         }
         case 4: {

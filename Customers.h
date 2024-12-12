@@ -49,7 +49,7 @@ public:
     static void deleteCustomer(vector<Customer>& customers, int accountNumber); // add error handling
 	static void sortCustomers(vector<Customer>& customers, bool ascending = true); // use lambda function
 	static void printAllCustomers(const vector<Customer>& customers); // format output
-    static void printCustomerDetails(const vector<Customer>& customers, int accountNumber);// add error handling // consider using find_if
+    static void printCustomerDetailsWithPurchases(const vector<Customer>& customers, const vector<Purchase>& purchases, int accountNumber); // add error handling // consider using find_if
     static void saveToFile(const vector<Customer>& customers, const string& filename); // define a fixed file format (e.g., comma-separated values) to prevent issues with spaces in fields like the street address.
     void addPurchase(const Purchase& purchase);
     const std::vector<Purchase>& getPurchases() const;
