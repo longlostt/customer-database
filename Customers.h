@@ -43,7 +43,7 @@ public:
 
     // Ensure there are no unnecessary copies of Customer objects
     static vector<Customer> loadFromFile(const string& filename); // define a fixed file format (e.g., comma-separated values) to prevent issues with spaces in fields like the street address.
-	static void addCustomer(vector<Customer>& customers, const Customer& customer); // handle edge cases
+	static void addCustomer(vector<Customer>& customers); // handle edge cases
 	static void addMultipleCustomers(vector<Customer>& customers, int count); // handle edge cases // error handling
 	static void updateCustomer(vector<Customer>& customers, int accountNumber, const Customer& updatedCustomer); // add error handling
     static void deleteCustomer(vector<Customer>& customers, int accountNumber); // add error handling

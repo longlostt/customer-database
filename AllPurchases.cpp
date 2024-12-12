@@ -79,7 +79,11 @@ void Purchase::saveToFile(const vector<Purchase>& purchases, const string& filen
     ofstream file(filename);
     if (file.is_open()) {
         for (const auto& purchase : purchases) {
-            file << purchase.getAccountNumber() << " " << purchase.getItem() << " " << purchase.getDate() << " " << purchase.getAmount() << endl;
+            // Enclose item and date in quotes to handle spaces
+            file << purchase.getAccountNumber() << " "
+                << "\"" << purchase.getItem() << "\" "   // Enclose item in quotes
+                << "\"" << purchase.getDate() << "\" "   // Enclose date in quotes
+                << purchase.getAmount() << endl;         // Amount remains as it is
         }
         file.close();
     }
@@ -87,3 +91,4 @@ void Purchase::saveToFile(const vector<Purchase>& purchases, const string& filen
         cerr << "Unable to open file for writing: " << filename << endl;
     }
 }
+

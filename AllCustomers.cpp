@@ -1,5 +1,7 @@
 #include "Customers.h"
 #include "Purchases.h"
+#include <sstream> // Include for istringstream
+
 
 // Constructor implementation
 Customer::Customer(const string& firstName, const string& lastName, int accountNumber,
@@ -36,17 +38,79 @@ vector<Customer> Customer::loadFromFile(const string& filename) {
     if (file.is_open()) {
         string firstName, lastName, streetAddress, city, state, zipCode, phoneNumber;
         int accountNumber;
-        while (file >> firstName >> lastName >> accountNumber >> streetAddress >> city >> state >> zipCode >> phoneNumber) {
+        string line;
+
+        while (getline(file, line)) {
+            stringstream ss(line);
+
+            // Read first name, last name, and account number
+            ss >> firstName >> lastName >> accountNumber;
+
+            // Read the rest of the address fields
+            getline(ss, streetAddress, ',');  // Read street address (up to the first comma)
+            ss.ignore(); // Ignore spaces or other separators after the comma
+
+            getline(ss, city, ',');           // Read city
+            ss.ignore();
+
+            getline(ss, state, ',');          // Read state
+            ss.ignore();
+
+            getline(ss, zipCode, ',');        // Read zip code
+            ss.ignore();
+
+            // Finally, read the phone number (remaining part of the string)
+            getline(ss, phoneNumber);
+
             customers.emplace_back(firstName, lastName, accountNumber, streetAddress, city, state, zipCode, phoneNumber);
         }
+
         file.close();
     }
     return customers;
 }
 
+
 // Add a single customer
-void Customer::addCustomer(vector<Customer>& customers, const Customer& customer) {
-    customers.push_back(customer);
+void Customer::addCustomer(vector<Customer>& customers) {
+    string firstName, lastName, streetAddress, city, state, zipCode, phoneNumber;
+    int accountNumber;
+
+	cin.ignore();  // Clear the buffer before using getline
+
+    // Get customer information using a method from the Customer class
+    cout << "Enter first name: ";
+    getline(cin, firstName);  // Use getline for multi-word input
+	
+    cout << "Enter last name: ";
+    getline(cin, lastName);
+    
+    cout << "Enter account number: ";
+    cin >> accountNumber;
+    cin.ignore();  // Clear the buffer after cin, before using getline
+
+    cout << "Enter street address: ";
+    getline(cin, streetAddress);
+    
+    cout << "Enter city: ";
+    getline(cin, city);
+   
+    cout << "Enter state: ";
+    getline(cin, state);
+    
+    cout << "Enter zip code: ";
+    getline(cin, zipCode);
+    
+    cout << "Enter phone number: ";
+    getline(cin, phoneNumber);
+
+    cout << endl;
+   
+    // Create a customer object with the input data
+    Customer newCustomer(firstName, lastName, accountNumber, streetAddress, city, state, zipCode, phoneNumber);
+
+    // Add the new customer to the customers vector
+    customers.push_back(newCustomer);
 }
 
 // Add multiple customers recursively
@@ -101,11 +165,17 @@ void Customer::sortCustomers(vector<Customer>& customers, bool ascending) {
 // Print all customers
 void Customer::printAllCustomers(const vector<Customer>& customers) {
     for (const auto& customer : customers) {
-        cout << customer.getFirstName() << " " << customer.getLastName() << " " << customer.getAccountNumber() << " "
-            << customer.getStreetAddress() << " " << customer.getCity() << " " << customer.getState() << " "
-            << customer.getZipCode() << " " << customer.getPhoneNumber() << endl;
+        cout << "Name: " << customer.getFirstName() << " " << customer.getLastName() << endl;
+        cout << "Account Number: " << customer.getAccountNumber() << endl;
+        cout << "Address: " << customer.getStreetAddress() << ", "
+            << customer.getCity() << ", " << customer.getState()
+            << " " << customer.getZipCode() << endl;
+        cout << "Phone: " << customer.getPhoneNumber() << endl;
+        cout << "----------------------------------" << endl;
     }
+    cout << endl;
 }
+
 
 // Print specific customer details
 void Customer::printCustomerDetails(const vector<Customer>& customers, int accountNumber) {
@@ -142,9 +212,15 @@ void Customer::saveToFile(const vector<Customer>& customers, const string& filen
     ofstream file(filename);
     if (file.is_open()) {
         for (const auto& customer : customers) {
-            file << customer.getFirstName() << " " << customer.getLastName() << " " << customer.getAccountNumber() << " "
-                << customer.getStreetAddress() << " " << customer.getCity() << " " << customer.getState() << " "
-                << customer.getZipCode() << " " << customer.getPhoneNumber() << endl;
+            // Write the customer's data to the file with the desired format
+            file << customer.getFirstName() << " "
+                << customer.getLastName() << " "
+                << customer.getAccountNumber() << " "
+                << customer.getStreetAddress() << ", "  // Add a comma after the street address
+                << customer.getCity() << ", "           // Add a comma after the city
+                << customer.getState() << ", "          // Add a comma after the state
+                << customer.getZipCode() << ", "        // Add a comma after the zip code
+                << customer.getPhoneNumber() << endl;   // Phone number is last, no comma after it
         }
         file.close();
     }
@@ -152,6 +228,8 @@ void Customer::saveToFile(const vector<Customer>& customers, const string& filen
         cerr << "Unable to open file for writing: " << filename << endl;
     }
 }
+
+
 
 
 // addPurchase 

@@ -17,7 +17,7 @@ void printMenu() {
     cout << "7. Update a customer’s information" << endl;
     cout << "8. Delete a customer’s information" << endl;
     cout << "9. Add a new purchase for a customer" << endl;
-    cout << "10. Add multiple new purchases (using recursion)" << endl;
+	cout << "10. Add multiple new purchases" << endl; // using recursion
     cout << "11. Save updated data to the original files or copy to a new file" << endl;
     cout << "12. Exit" << endl;
     
@@ -55,7 +55,7 @@ int main() {
             int accountNumber;
             cout << "Enter account number: ";
             cin >> accountNumber;
-            //Customer::printCustomerDetails(customers, purchases, accountNumber);
+            Customer::printCustomerDetails(customers, accountNumber);
             Purchase::printPurchasesForCustomer(purchases, accountNumber);
             break;
         }
@@ -70,25 +70,8 @@ int main() {
         }
         case 5: {
             system("cls");
-            string firstName, lastName, streetAddress, city, state, zipCode, phoneNumber;
-            int accountNumber;
-            cout << "Enter first name: ";
-            cin >> firstName;
-            cout << "Enter last name: ";
-            cin >> lastName;
-            cout << "Enter account number: ";
-            cin >> accountNumber;
-            cout << "Enter street address: ";
-            cin >> streetAddress;
-            cout << "Enter city: ";
-            cin >> city;
-            cout << "Enter state: ";
-            cin >> state;
-            cout << "Enter zip code: ";
-            cin >> zipCode;
-            cout << "Enter phone number: ";
-            cin >> phoneNumber;
-            customers.emplace_back(firstName, lastName, accountNumber, streetAddress, city, state, zipCode, phoneNumber);
+            // Simply call the addCustomer function from the Customer class
+            customers[0].addCustomer(customers);  // You can call it from any customer in the list
             break;
         }
         case 6: {
