@@ -4,7 +4,6 @@
 #include <limits>
 
 
-
 // Constructor implementation
 Customer::Customer(const string& firstName, const string& lastName, int accountNumber,
     const string& streetAddress, const string& city,
@@ -43,36 +42,37 @@ std::string trim(const std::string& str) {
 vector<Customer> Customer::loadFromFile(const string& filename) {
     vector<Customer> customers;
     ifstream file(filename);
-    if (file.is_open()) {
-        string firstName, lastName, streetAddress, city, state, zipCode, phoneNumber;
-        int accountNumber;
-        string line;
 
+    if (file.is_open()) {
+        string line;
         while (getline(file, line)) {
             stringstream ss(line);
 
-            // Read first name, last name, and account number
+            string firstName, lastName, streetAddress, city, state, zipCode, phoneNumber;
+            int accountNumber;
+
+            // Extract first name, last name, and account number
             ss >> firstName >> lastName >> accountNumber;
+            
 
-            // Read the rest of the address fields
-            getline(ss, streetAddress, ',');
-            streetAddress = trim(streetAddress); // Trim leading and trailing whitespace
-            ss.ignore();
+            // Read the rest of the line
+            getline(ss, line); // This contains the remaining fields
+            stringstream addressStream(line);
 
-            getline(ss, city, ',');
+            // Parse remaining fields with proper handling of commas
+            getline(addressStream, streetAddress, ',');
+            streetAddress = trim(streetAddress); // Trim leading/trailing whitespace
+
+            getline(addressStream, city, ',');
             city = trim(city);
-            ss.ignore();
 
-            getline(ss, state, ',');
+            getline(addressStream, state, ',');
             state = trim(state);
-            ss.ignore();
 
-            getline(ss, zipCode, ',');
+            getline(addressStream, zipCode, ',');
             zipCode = trim(zipCode);
-            ss.ignore();
 
-            // Read phone number and trim it
-            getline(ss, phoneNumber);
+            getline(addressStream, phoneNumber);
             phoneNumber = trim(phoneNumber);
 
             // Add the customer to the vector
@@ -81,8 +81,14 @@ vector<Customer> Customer::loadFromFile(const string& filename) {
 
         file.close();
     }
+    else {
+        cerr << "Error opening file: " << filename << endl;
+    }
+
     return customers;
 }
+
+
 
 // Add a single customer
 void Customer::addCustomer(vector<Customer>& customers) {
@@ -161,14 +167,44 @@ void Customer::addMultipleCustomers(vector<Customer>& customers, int count) {
 }
 
 // Update customer information
-void Customer::updateCustomer(vector<Customer>& customers, int accountNumber, const Customer& updatedCustomer) {
+void Customer::updateCustomer(vector<Customer>& customers, int accountNumber) {
     for (auto& customer : customers) {
         if (customer.getAccountNumber() == accountNumber) {
-            customer = updatedCustomer;
-            break;
+            // Collect new customer details
+            string firstName, lastName, streetAddress, city, state, zipCode, phoneNumber;
+            cout << "Enter new first name: ";
+            cin >> firstName;
+            cout << "Enter new last name: ";
+            cin >> lastName;
+            cout << "Enter new street address: ";
+            cin.ignore(); // Ignore leftover newline from previous input
+            getline(cin, streetAddress); // Use getline for street address to allow spaces
+            cout << "Enter new city: ";
+            getline(cin, city);
+            cout << "Enter new state: ";
+            getline(cin, state);
+            cout << "Enter new zip code: ";
+            getline(cin, zipCode);
+            cout << "Enter new phone number: ";
+            getline(cin, phoneNumber);
+
+            // Update the customer details
+            customer.setFirstName(firstName);
+            customer.setLastName(lastName);
+            customer.setStreetAddress(streetAddress);
+            customer.setCity(city);
+            customer.setState(state);
+            customer.setZipCode(zipCode);
+            customer.setPhoneNumber(phoneNumber);
+
+            cout << "Customer details updated successfully.\n";
+            return;
         }
     }
+
+    cout << "Customer with account number " << accountNumber << " not found.\n";
 }
+
 
 // Delete customer information
 void Customer::deleteCustomer(vector<Customer>& customers, int accountNumber) {
@@ -242,7 +278,7 @@ void Customer::saveToFile(const vector<Customer>& customers, const string& filen
             // Write the customer's data to the file with the desired format
             file << customer.getFirstName() << " "
                 << customer.getLastName() << " "
-                << customer.getAccountNumber() << ""
+                << customer.getAccountNumber() << " "
                 << customer.getStreetAddress() << ", "  // Add a comma after the street address
                 << customer.getCity() << ", "           // Add a comma after the city
                 << customer.getState() << ", "          // Add a comma after the state

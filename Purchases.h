@@ -28,7 +28,7 @@ public:
 
     // Public member functions
     static vector<Purchase> loadFromFile(const string& filename);
-    static void addPurchase(vector<Purchase>& purchases, const Purchase& purchase);
+    static void addPurchase(vector<Purchase>& purchases);
     static void addMultiplePurchases(vector<Purchase>& purchases, int count);
     static double calculateTotalSpend(const vector<Purchase>& purchases, int accountNumber);
     static void printPurchasesForCustomer(const vector<Purchase>& purchases, int accountNumber);

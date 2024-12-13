@@ -63,9 +63,36 @@ vector<Purchase> Purchase::loadFromFile(const string& filename) {
 
 
 // Add a single purchase
-void Purchase::addPurchase(vector<Purchase>& purchases, const Purchase& purchase) {
-    purchases.push_back(purchase);
+void Purchase::addPurchase(vector<Purchase>& purchases) {
+    int accountNumber;
+    string item, date;
+    double amount;
+
+    cout << "Enter account number: ";
+    while (!(cin >> accountNumber)) {
+        cout << "Invalid input. Please enter a valid account number: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    cout << "Enter item: ";
+    cin.ignore(); // To ignore the newline character left in the buffer
+    getline(cin, item);
+
+    cout << "Enter date: ";
+    getline(cin, date);
+
+    cout << "Enter amount: ";
+    while (!(cin >> amount)) {
+        cout << "Invalid input. Please enter a valid amount: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    // Add the new purchase to the vector
+    purchases.emplace_back(accountNumber, item, date, amount);
 }
+
 
 // Add multiple purchases recursively
 void Purchase::addMultiplePurchases(vector<Purchase>& purchases, int count) {
@@ -119,7 +146,7 @@ void Purchase::saveToFile(const vector<Purchase>& purchases, const string& filen
         for (const auto& purchase : purchases) {
             // Save purchase details with commas separating each field
             file << purchase.getAccountNumber() << ", "
-                << purchase.getItem() << ","
+                << purchase.getItem() << ", "
                 << purchase.getDate() << ", "
                 << purchase.getAmount() << endl;   // Amount remains as it is
         }

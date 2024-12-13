@@ -37,7 +37,11 @@ int main() {
     do {
         printMenu();
         cout << "Enter your choice: ";
-        cin >> choice;
+        while (!(cin >> choice)) {
+            cin.clear(); // clear the error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard invalid input
+            cout << "Invalid input. Please enter an integer: ";
+        }
 
         switch (choice) {
         case 1:
@@ -91,25 +95,7 @@ int main() {
             int accountNumber;
             cout << "Enter account number of the customer to update: ";
             cin >> accountNumber;
-
-            string firstName, lastName, streetAddress, city, state, zipCode, phoneNumber;
-            cout << "Enter new first name: ";
-            cin >> firstName;
-            cout << "Enter new last name: ";
-            cin >> lastName;
-            cout << "Enter new street address: ";
-            cin >> streetAddress;
-            cout << "Enter new city: ";
-            cin >> city;
-            cout << "Enter new state: ";
-            cin >> state;
-            cout << "Enter new zip code: ";
-            cin >> zipCode;
-            cout << "Enter new phone number: ";
-            cin >> phoneNumber;
-
-            Customer updatedCustomer(firstName, lastName, accountNumber, streetAddress, city, state, zipCode, phoneNumber);
-            Customer::updateCustomer(customers, accountNumber, updatedCustomer);
+            Customer::updateCustomer(customers, accountNumber);
             break;
         }
         case 8: {
@@ -122,34 +108,8 @@ int main() {
         }
         case 9: {
             system("cls");
-            int accountNumber;
-            string item, date;
-            double amount;
-
-            cout << "Enter account number: ";
-            while (!(cin >> accountNumber)) {
-                cout << "Invalid input. Please enter a valid account number: ";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            }
-
-            cout << "Enter item: ";
-            cin.ignore(); // To ignore the newline character left in the buffer
-            getline(cin, item);
-
-            cout << "Enter date: ";
-            getline(cin, date);
-
-            cout << "Enter amount: ";
-            while (!(cin >> amount)) {
-                cout << "Invalid input. Please enter a valid amount: ";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            }
-
-            purchases.emplace_back(accountNumber, item, date, amount);
+            Purchase::addPurchase(purchases);
             break;
-
         }
         case 10: {
             system("cls");
@@ -181,6 +141,7 @@ int main() {
             break;
         }
         default:
+			system("cls");
             cout << "Invalid choice. Please try again." << endl;
         }
     } while (choice != 12);
